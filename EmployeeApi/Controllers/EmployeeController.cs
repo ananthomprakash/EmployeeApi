@@ -1,6 +1,8 @@
-﻿using Employees.Data.Interface;
+﻿using Employees.Auth.Interface;
+using Employees.Data.Interface;
 using Employees.Data.Models;
 using Employees.Validate.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -8,7 +10,7 @@ using System.Threading.Tasks;
 namespace EmployeeApi.Controllers
 {
     #region Employee Controller
-
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeeController : ControllerBase
@@ -19,25 +21,22 @@ namespace EmployeeApi.Controllers
         private readonly EmployeeValidation _employeeValidation;
 
         private readonly EmployeeModelValidation _employeeModelValidation;
+
+        private readonly IJwtAuth _jwtAuth;
         #endregion
-
-
-
-
-
-
 
         #region Constructor
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="_employeeRepository"></param>
-        public EmployeeController(IEmployeeRepository _employeeRepository)
+        public EmployeeController(IEmployeeRepository _employeeRepository, IJwtAuth jwtAuth)
         {
             employeeRepository = _employeeRepository;
             _employeeValidation = new EmployeeValidation();
             _employeeModelValidation = new EmployeeModelValidation();
 
+            _jwtAuth = jwtAuth;
         }
         #endregion
 
@@ -239,6 +238,20 @@ namespace EmployeeApi.Controllers
             {
                 return BadRequest();
             }
+        }
+        #endregion
+
+        #region Authentication
+        [AllowAnonymous]
+        // POST api/<MembersController>
+        [HttpPost]
+        [Route("v1/authentication")]
+        public IActionResult Authentication([FromBody] UserCredential userCredential)
+        {
+            var token = _jwtAuth.Authentication(userCredential.UserName, userCredential.Password);
+            if (token == null)
+                return Unauthorized();
+            return Ok(token);
         }
         #endregion
 

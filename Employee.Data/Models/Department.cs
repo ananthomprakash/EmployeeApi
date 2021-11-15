@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+
+#nullable disable
 
 namespace Employees.Data.Models
 {
@@ -10,7 +11,7 @@ namespace Employees.Data.Models
         public string DepartmentName { get; set; }
         public int? EmployeeId { get; set; }
         public DateTime? CreatedDate { get; set; }
-        [JsonIgnore]
+
         public virtual Employee Employee { get; set; }
     }
 }
