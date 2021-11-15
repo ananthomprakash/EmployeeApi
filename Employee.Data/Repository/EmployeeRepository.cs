@@ -136,5 +136,21 @@ namespace Employees.Data.Repository
             }
             return result;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="passWord"></param>
+        /// <returns></returns>
+        public async Task<bool> CheckUser(string userName,string passWord)
+        {
+            
+            if(db!= null)
+            {
+               return await db.Users.AnyAsync(x => x.Name == userName && x.Password == passWord);
+            }
+            return false;
+        }
     }
 }

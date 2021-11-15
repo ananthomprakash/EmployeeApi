@@ -248,10 +248,19 @@ namespace EmployeeApi.Controllers
         [Route("v1/authentication")]
         public IActionResult Authentication([FromBody] UserCredential userCredential)
         {
-            var token = _jwtAuth.Authentication(userCredential.UserName, userCredential.Password);
-            if (token == null)
+            bool checkUser = employeeRepository.CheckUser(userCredential.UserName, userCredential.Password).Result;
+            if (checkUser == false)
+            {
                 return Unauthorized();
-            return Ok(token);
+            }
+            else
+            {
+                var token = _jwtAuth.Authentication(userCredential.UserName, userCredential.Password);
+                if (token == null)
+                    return Unauthorized();
+                return Ok(token);
+
+            }
         }
         #endregion
 

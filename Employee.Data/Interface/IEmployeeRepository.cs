@@ -21,5 +21,9 @@ namespace Employees.Data.Interface
 
         Task<int> UpdateEmployee(Employee employee);
 
+        Task<bool> CheckUser(string userName, string passWord);
+
+        
+
     }
 }
